@@ -459,6 +459,9 @@ get_status_led() {
 	wlr8100)
 		status_led="sitecom:amber:status"
 		;;
+	gloria-v1)
+		status_led="gloria:green:system"
+		;;
 	esac
 }
 

@@ -1004,3 +1004,13 @@ define Device/tl-wa7210n-v2
     CONSOLE := ttyATH0,115200
 endef
 TARGET_DEVICES += tl-wa7210n-v2
+
+
+define Device/gloria-v1
+  $(Device/tplink-8mlzma)
+  BOARDNAME := GLORIA-V1
+  DEVICE_PROFILE := GLORIA
+  TPLINK_HWID := 0x00020001
+endef
+
+TARGET_DEVICES += gloria-v1

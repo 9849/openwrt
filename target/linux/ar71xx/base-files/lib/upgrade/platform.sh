@@ -412,6 +412,33 @@ platform_check_image() {
 	tl-wr1043nd-v4|\
 	tl-wr1043nd|\
 	tl-wr2543n|\
+	gloria-v1)
+		[ "$magic" != "0100" ] && {
+			echo "Invalid image type."
+			return 1
+		}
+
+		local hwid
+		local imageid
+
+		hwid=$(tplink_get_hwid)
+		imageid=$(tplink_get_image_hwid "$1")
+
+		[ "$hwid" != "$imageid" ] && {
+			echo "Invalid image, hardware ID mismatch, hw:$hwid image:$imageid."
+			return 1
+		}
+
+		local boot_size
+
+		boot_size=$(tplink_get_image_boot_size "$1")
+		[ "$boot_size" != "00000000" ] && {
+			echo "Invalid image, it contains a bootloader."
+			return 1
+		}
+
+		return 0
+		;;
 	tl-wr703n|\
 	tl-wr710n|\
 	tl-wr720n-v3|\
