@@ -134,6 +134,7 @@ detect_mac80211() {
 			set wireless.default_radio${devidx}.encryption=psk-mixed
 			set wireless.default_radio${devidx}.key=gloria9849
 			set wireless.default_radio${devidx}.wds=1
+			set wireless.default_radio${devidx}.wpa_group_rekey=3600
 EOF
 		uci -q commit wireless
 
