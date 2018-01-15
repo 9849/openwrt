@@ -90,12 +90,20 @@ generate_network() {
 	case "$protocol" in
 		static)
 			local ipad
+			local a=`cat /sys/class/ieee80211/phy0/macaddress | awk -F ':' '{print $4}'`
+			local b=`cat /sys/class/ieee80211/phy0/macaddress | awk -F ':' '{print $5}'`
+			local c=`cat /sys/class/ieee80211/phy0/macaddress | awk -F ':' '{print $6}'`
+			a=`printf %d 0x$a`
+			b=`printf %d 0x$b`
+			c=`printf %d 0x$c`
+			local ip="10."$a"."$b"."$c
+			
 			case "$1" in
-				lan) ipad=${ipaddr:-"192.168.1.1"} ;;
+				lan) ipad=${ip} ;;
 				*) ipad=${ipaddr:-"192.168.$((addr_offset++)).1"} ;;
 			esac
 
-			netm=${netmask:-"255.255.255.0"}
+			netm=${netmask:-"255.0.0.0"}
 
 			uci -q batch <<-EOF
 				set network.$1.proto='static'
