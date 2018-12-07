@@ -15,6 +15,9 @@ case "$board" in
 	linksys,ea8500)
 		echo $(macaddr_add $(mtd_get_mac_ascii devinfo hw_mac_addr) $(($PHYNBR + 1)) ) > /sys${DEVPATH}/macaddress
 		;;
+	nec,wg2600hp)
+		echo $(macaddr_add $(mtd_get_mac_binary PRODUCTDATA 12) $((1 - $PHYNBR)) ) > /sys${DEVPATH}/macaddress
+		;;
 	netgear,d7800 |\
 	netgear,r7500v2 |\
 	netgear,r7800)
@@ -32,3 +35,24 @@ case "$board" in
 	*)
 		;;
 esac
+
+OPATH=${DEVPATH##/devices/platform/}
+OPATH=${OPATH%%/ieee*}
+
+# 10 radios is enough for anyone!
+for i in `seq 0 9`;
+  do
+  BUS=`uci get wireless.@wifi-device[$i].path`
+  if [ "$BUS " == "$OPATH " ]
+      then
+      PHYNAME=${DEVPATH##*ieee80211/}
+      NPHYNAME=`uci get wireless.@wifi-device[$i].phyname`
+      if [ "$NPHYNAME " != " " ]
+          then
+          if [ "$PHYNAME " != "$NPHYNAME " ]
+              then
+              iw $PHYNAME set name $NPHYNAME
+          fi
+      fi
+  fi
+done

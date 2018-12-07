@@ -76,6 +76,9 @@ ramips_board_detect() {
 	*"BC2")
 		name="bc2"
 		;;
+	*"BOCCO")
+		name="bocco"
+		;;
 	*"BR-6475nD")
 		name="br-6475nd"
 		;;
@@ -201,9 +204,6 @@ ramips_board_detect() {
 		;;
 	*"FreeStation5")
 		name="freestation5"
-		;;
-	*"GB-PC1")
-		name="gb-pc1"
 		;;
 	*"GL-MT300A")
 		name="gl-mt300a"
@@ -502,9 +502,6 @@ ramips_board_detect() {
 	*"U25AWF-H1")
 		name="u25awf-h1"
 		;;
-	*"U7621-06 (256M RAM/16M flash)")
-		name="u7621-06-256M-16M"
-		;;
 	*"U7628-01 (128M RAM/16M flash)")
 		name="u7628-01-128M-16M"
 		;;
@@ -576,9 +573,6 @@ ramips_board_detect() {
 		;;
 	*"WHR-G300N")
 		name="whr-g300n"
-		;;
-	*"WiTi")
-                name="witi"
 		;;
 	*"WIZARD 8800")
 		name="wizard8800"

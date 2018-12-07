@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=procd
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/procd.git
-PKG_SOURCE_DATE:=2018-01-23
-PKG_SOURCE_VERSION:=653629f19e591a0827ab39de07b4526bb119a57a
-PKG_MIRROR_HASH:=2e0c3ae45521eea456a8411c8d9ef19ed9a5ed6c0ab38b9496555625fb4ba6a2
+PKG_SOURCE_DATE:=2018-11-23
+PKG_SOURCE_VERSION:=d6673547adc3768ce674799fa35952351866c9d0
+PKG_MIRROR_HASH:=ee11e1f652e9268e21dfd7835d26993c682ed33f6ba474c283cb9ef04f71e626
 CMAKE_INSTALL:=1
 
 PKG_LICENSE:=GPL-2.0
@@ -36,6 +36,9 @@ endif
 
 CMAKE_OPTIONS += -DEARLY_PATH="$(TARGET_INIT_PATH)"
 TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lrt)
+
+TARGET_CFLAGS += -flto
+TARGET_LDFLAGS += -flto
 
 define Package/procd
   SECTION:=base
@@ -96,7 +99,7 @@ define Package/procd/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{init,procd,askfirst,udevtrigger,upgraded} $(1)/sbin/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libsetlbf.so $(1)/lib
 	$(INSTALL_BIN) ./files/reload_config $(1)/sbin/
-	$(INSTALL_DATA) ./files/hotplug*.json $(1)/etc/
+	$(INSTALL_CONF) ./files/hotplug*.json $(1)/etc/
 	$(INSTALL_DATA) ./files/procd.sh $(1)/lib/functions/
 endef
 

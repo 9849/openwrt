@@ -57,13 +57,33 @@ define Build/trx
 		-a 4 -f $(IMAGE_ROOTFS)
 endef
 
+define Build/loader-common
+	rm -rf $@.src
+	$(MAKE) -C lzma-loader \
+		PKG_BUILD_DIR="$@.src" \
+		TARGET_DIR="$(dir $@)" LOADER_NAME="$(notdir $@)" \
+		BOARD="$(BOARDNAME)" PLATFORM="$(PLATFORM)" \
+		LZMA_TEXT_START=0x82000000 LOADADDR=$(KERNEL_LOADADDR) \
+		$(1) compile loader.$(LOADER_TYPE)
+	mv "$@.$(LOADER_TYPE)" "$@"
+	rm -rf $@.src
+endef
+
+define Build/loader-kernel
+	$(call Build/loader-common,LOADER_DATA="$@")
+endef
+
 define Build/relocate-kernel
+	rm -rf $@.relocate
+	$(CP) ../../generic/image/relocate $@.relocate
+	$(MAKE) -C $@.relocate KERNEL_ADDR=$(KERNEL_LOADADDR) CROSS_COMPILE=$(TARGET_CROSS)
 	( \
-		dd if=$(KDIR)/loader.bin bs=32 conv=sync && \
+		dd if=$@.relocate/loader.bin bs=32 conv=sync && \
 		perl -e '@s = stat("$@"); print pack("V", @s[7])' && \
 		cat $@ \
 	) > $@.new
 	mv $@.new $@
+	rm -rf $@.relocate
 endef
 
 define MkCombineduImage
@@ -89,11 +109,6 @@ endef
 
 define Build/poray-header
 	$(STAGING_DIR_HOST)/bin/mkporayfw $(1) -f $@ -o $@.new
-	mv $@.new $@
-endef
-
-define Build/senao-header
-	$(STAGING_DIR_HOST)/bin/mksenaofw $(1) -e $@ -o $@.new
 	mv $@.new $@
 endef
 
@@ -129,6 +144,10 @@ define Build/mkdlinkfw-factory
 		-o $@.new \
 		-s $(DLINK_FIRMWARE_SIZE)
 	mv $@.new $@
+endef
+
+define Build/zyimage
+	$(STAGING_DIR_HOST)/bin/zyimage $(1) $@
 endef
 
 #
